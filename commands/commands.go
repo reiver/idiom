@@ -1,5 +1,5 @@
 package verboten
 
 import (
-	"./c"
+	_ "./c"
 )
