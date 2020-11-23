@@ -1,5 +1,5 @@
 package idiom
 
 type Handler interface {
-	Run(parameters ...Stringer) (Stringer, error)
+	Run(...Stringer) (Stringer, error)
 }
