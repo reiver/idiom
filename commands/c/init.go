@@ -5,5 +5,7 @@ import (
 )
 
 func init() {
-	idiom.Commands.Register(idiom.HandlerFunc(Run), name)
+	if err := idiom.Commands.Register(idiom.HandlerFunc(Run), name); nil != err {
+		panic(err)
+	}
 }
