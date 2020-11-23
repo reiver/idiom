@@ -8,7 +8,6 @@ import (
 type internalRegistrar struct {
 	mutex sync.RWMutex
 	handlers  map[string]Handler
-	summaries map[string]string
 }
 
 func (receiver *internalRegistrar) Fetch(name string) (Handler, error) {
