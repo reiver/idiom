@@ -1,6 +1,6 @@
 package verboten
 
 import (
-	_ "./c"
+	_ "./concatenate"
 	_ "./publish"
 )
