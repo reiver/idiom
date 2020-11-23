@@ -5,7 +5,9 @@ import (
 )
 
 func init() {
-	if err := idiom.Commands.Register(idiom.HandlerFunc(Run), name); nil != err {
-		panic(err)
+	for _, name := range names {
+		if err := idiom.Commands.Register(idiom.HandlerFunc(Run), name); nil != err {
+			panic(err)
+		}
 	}
 }

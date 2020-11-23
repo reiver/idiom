@@ -1,5 +1,9 @@
 package verboten
 
-const (
-	name = "c" // “c” is short for concatenate.
+var (
+	names []string = []string{
+		"c",           // “c” is short for concatenate.
+		"concat",      // “concat” is short for concatenate.
+		"concatenate",
+	}
 )
