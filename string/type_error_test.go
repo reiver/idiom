@@ -36,7 +36,7 @@ func TestError(t *testing.T) {
 			continue
 		}
 
-		value, err := str.Unwrap()
+		value, err := str.Return()
 
 		if expected, actual := "", value; expected != actual {
 			t.Error("The actual returned string is not what was expected.")

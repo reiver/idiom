@@ -34,7 +34,7 @@ func Something(value string) Type {
 	}
 }
 
-func (receiver Type) Unwrap() (string, error) {
+func (receiver Type) Return() (string, error) {
 	if Nothing() == receiver {
 		return "", ErrNothing
 	}
