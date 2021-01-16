@@ -1,4 +1,4 @@
-package idiom
+package idioms
 
 var Commands Registrar
 

@@ -1,4 +1,4 @@
-package idiom
+package idioms
 
 type HandlerFunc func(...string)(string, error)
 
