@@ -1,16 +1,28 @@
 package verboten
 
 import (
+	"../../string"
+
 	"strings"
 )
 
-func Run(parameters ...string) (string, error) {
+func Run(parameters ...idiom_string.Type) idiom_string.Type {
 
 	var builder strings.Builder
 
 	for _, s := range parameters {
-		builder.WriteString(s)
+		if idiom_string.Nothing() == s {
+			continue
+		}
+
+		str, err := s.Unwrap()
+		if nil != err {
+			//@TODO: should we return all the errors?
+			return s
+		}
+
+		builder.WriteString(str)
 	}
 
-	return builder.String(), nil
+	return idiom_string.Something(builder.String())
 }
