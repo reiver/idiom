@@ -1,7 +1,7 @@
 package verboten
 
 import (
-	"../../idioms"
+	"../../kernel"
 	"../../string"
 
 	"fmt"
@@ -9,7 +9,7 @@ import (
 )
 
 func Run(parameters ...idiom_string.Type) idiom_string.Type {
-	return run(idioms.Stdout, parameters...)
+	return run(idiom_kernel.Stdout, parameters...)
 }
 
 func run(stdout io.Writer, parameters ...idiom_string.Type) idiom_string.Type {
