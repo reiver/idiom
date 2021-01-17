@@ -59,6 +59,7 @@ func (receiver Type) GoString() string {
 	}
 }
 
+// Err returns an error if this contains an error, else it returns nil.
 func (receiver Type) Err() error {
 	if ! receiver.IsError()  {
 		return nil
