@@ -2,34 +2,29 @@ package verboten
 
 import (
 	"../../idioms"
+	"../../string"
 
 	"fmt"
 	"io"
-	"strings"
 )
 
-func Run(parameters ...string) (string, error) {
+func Run(parameters ...idiom_string.Type) idiom_string.Type {
 	return run(idioms.Stdout, parameters...)
 }
 
-func run(stdout io.Writer, parameters ...string) (string, error) {
+func run(stdout io.Writer, parameters ...idiom_string.Type) idiom_string.Type {
 
-	var buffer strings.Builder
+	if expected, actual := 1, len(parameters); expected != actual {
+		return idiom_string.Errorf("expected %d parameter(s), but actually got %d", expected, actual)
+	}
+	parameter0 := parameters[0]
 
-	buffer.WriteRune('«')
-
-	for i,s := range parameters {
-		if "" == s {
-			continue
+	if parameter0.IsSomething() {
+		value, err := parameter0.Return()
+		if nil == err {
+			fmt.Fprint(stdout, value)
 		}
-		if 0 < i {
-			buffer.WriteRune(' ')
-		}
-		buffer.WriteString(s)
 	}
 
-	buffer.WriteRune('»')
-
-	fmt.Fprintln(stdout, buffer.String())
-	return "", nil
+	return parameter0
 }

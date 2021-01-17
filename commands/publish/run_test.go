@@ -1,6 +1,8 @@
 package verboten
 
 import (
+	"../../string"
+
 	"strings"
 
 	"testing"
@@ -9,95 +11,160 @@ import (
 func TestRun(t *testing.T) {
 
 	tests := []struct{
-		Values []string
+		Values []idiom_string.Type
 		Expected string
 	}{
 		{
-			Values: []string{},
-			Expected: "«»\n",
+			Values: []idiom_string.Type{},
+			Expected: "",
 		},
 
 
 
 		{
-			Values: []string{""},
-			Expected: "«»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something(""),
+			},
+			Expected: "",
 		},
 		{
-			Values: []string{"",""},
-			Expected: "«»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+			},
+			Expected: "",
 		},
 		{
-			Values: []string{"","",""},
-			Expected: "«»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+			},
+			Expected: "",
 		},
 		{
-			Values: []string{"","","",""},
-			Expected: "«»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+			},
+			Expected: "",
 		},
 		{
-			Values: []string{"","","","",""},
-			Expected: "«»\n",
-		},
-
-		{
-			Values: []string{"","","","","","","","","",""},
-			Expected: "«»\n",
-		},
-
-
-		{
-			Values: []string{"ap"},
-			Expected: "«ap»\n",
-		},
-		{
-			Values: []string{"ap","p"},
-			Expected: "«ap p»\n",
-		},
-		{
-			Values: []string{"ap","p","le"},
-			Expected: "«ap p le»\n",
-		},
-
-
-
-		{
-			Values: []string{"B"},
-			Expected: "«B»\n",
-		},
-		{
-			Values: []string{"B","ANA"},
-			Expected: "«B ANA»\n",
-		},
-		{
-			Values: []string{"B","ANA","NA"},
-			Expected: "«B ANA NA»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+			},
+			Expected: "",
 		},
 
-
-
 		{
-			Values: []string{"Cherry"},
-			Expected: "«Cherry»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+				idiom_string.Something(""),
+			},
+			Expected: "",
 		},
 
 
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("ap"),
+			},
+			Expected: "ap",
+		},
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("ap"),
+				idiom_string.Something("p"),
+			},
+			Expected: "",
+		},
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("ap"),
+				idiom_string.Something("p"),
+				idiom_string.Something("le"),
+			},
+			Expected: "",
+		},
+
+
 
 		{
-			Values: []string{"d"},
-			Expected: "«d»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something("B"),
+			},
+			Expected: "B",
 		},
 		{
-			Values: []string{"d","A"},
-			Expected: "«d A»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something("B"),
+				idiom_string.Something("ANA"),
+			},
+			Expected: "",
 		},
 		{
-			Values: []string{"d","A","t"},
-			Expected: "«d A t»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something("B"),
+				idiom_string.Something("ANA"),
+				idiom_string.Something("NA"),
+			},
+			Expected: "",
+		},
+
+
+
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("Cherry"),
+			},
+			Expected: "Cherry",
+		},
+
+
+
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("d"),
+			},
+			Expected: "d",
 		},
 		{
-			Values: []string{"d","A","t","E"},
-			Expected: "«d A t E»\n",
+			Values: []idiom_string.Type{
+				idiom_string.Something("d"),
+				idiom_string.Something("A"),
+			},
+			Expected: "",
+		},
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("d"),
+				idiom_string.Something("A"),
+				idiom_string.Something("t"),
+			},
+			Expected: "",
+		},
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("d"),
+				idiom_string.Something("A"),
+				idiom_string.Something("t"),
+				idiom_string.Something("E"),
+			},
+			Expected: "",
 		},
 	}
 
@@ -105,23 +172,38 @@ func TestRun(t *testing.T) {
 
 		var output strings.Builder
 
-		result, err := run(&output, test.Values...)
-		if nil != err {
-			t.Errorf("For test #%d, did not expect an error, but actually got one: (%T) %s", testNumber, err, err)
+		result := run(&output, test.Values...)
+
+		if 1 > len(test.Values) {
+			if expected, actual := idiom_string.Error("expected 1 parameter(s), but actually got 0"), result; expected != actual {
+				t.Errorf("For test #%d, expected a specific error, but did not actually get it.", testNumber)
+				t.Logf("EXPECTED: %#v", expected)
+				t.Logf("ACTUAL:   %#v", actual)
+				t.Logf("EXPECTED")
+			}
+			continue
+		}
+		if length := len(test.Values); 1 < length {
+			if expected, actual := idiom_string.Errorf("expected 1 parameter(s), but actually got %d", length), result; expected != actual {
+				t.Errorf("For test #%d, expected a specific error, but did not actually get it.", testNumber)
+				t.Logf("EXPECTED: %#v", expected)
+				t.Logf("ACTUAL:   %#v", actual)
+				t.Logf("EXPECTED")
+			}
 			continue
 		}
 
-		if expected, actual := "", result; expected != actual {
+		if expected, actual := test.Values[0], result; expected != actual {
 			t.Errorf("For test #%d, the actual value is not what was expected.", testNumber)
-			t.Logf("EXPECTED: %q", expected)
-			t.Logf("ACTUAL:   %q", actual)
+			t.Logf("EXPECTED: %#v", expected)
+			t.Logf("ACTUAL:   %#v", actual)
 			continue
 		}
 
 		if expected, actual := test.Expected, output.String(); expected != actual {
-			t.Errorf("For test #%d, the actual value is not what was expected.", testNumber)
-			t.Logf("EXPECTED: %q", expected)
-			t.Logf("ACTUAL:   %q", actual)
+			t.Errorf("For test #%d, the actual value of what was outputted is not what was expected.", testNumber)
+			t.Logf("EXPECTED: %#v", expected)
+			t.Logf("ACTUAL:   %#v", actual)
 			continue
 		}
 	}
