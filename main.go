@@ -5,10 +5,12 @@ import (
 	"./kernel"
 	"./string"
 
+	"bytes"
 	"bufio"
 	"fmt"
 	"os"
 	"strings"
+	"unicode/utf8"
 )
 
 func main() {
@@ -47,11 +49,36 @@ func main() {
 	// The for-loop here reads in a single line of code, and then tries to interpret it.
 	{
 		scanner := bufio.NewScanner(file)
+		scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error){
+
+			if atEOF && len(data) == 0 {
+				return 0, nil, nil
+			}
+			if atEOF {
+				return len(data), data, nil
+			}
+
+			if i := bytes.IndexAny(data, "|\u000A\u000B\u000C\u000D\u0085\u2028\u2029"); i >= 0 {
+				r, size := utf8.DecodeRune(data[i:])
+				switch r {
+				case '|':
+					return i, data[0:i], nil
+				default:
+					return i + size, data[0:i], nil
+				}
+			}
+
+			return
+		})
+
+
 		var lineNumber int64 = 0
+		var result idiom_string.Type
 		for scanner.Scan() {
 			lineNumber++
 
 			line := scanner.Text()
+			line = strings.Trim(line, " \t")
 
 			// Skip over any "empty" lines.
 			if "" == strings.Trim(line, " \t") {
@@ -71,9 +98,10 @@ func main() {
 				p[i] = idiom_string.Something(parameters[i])
 			}
 
-			result := idiom_kernel.Run(command, p...)
+			result = idiom_kernel.Run(command, p...)
 			if result.IsError() {
-				fmt.Fprintln(os.Stderr, "\nERROR:", result.Err())
+				fmt.Fprintln(os.Stderr, "\n"+"\x1b[30;41m"+"ERROR"+"\x1b[0m"+" on line", lineNumber, ":", result.Err())
+				fmt.Fprintf(os.Stderr, "\t%q\n", scanner.Text())
 				os.Exit(1)
 				return
 			}
