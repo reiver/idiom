@@ -15,13 +15,12 @@ func Run(parameters ...idiom_string.Type) idiom_string.Type {
 	}
 
         var wrappedName  idiom_string.Type = parameters[0]
-        var wrappedValue idiom_string.Type = parameters[1]
-
 	if !wrappedName.IsSomething() {
 		return wrappedName
 	}
 	name, _ := wrappedName.Return()
 
+        var wrappedValue idiom_string.Type = parameters[1]
 	if !wrappedValue.IsSomething() {
 		return wrappedValue
 	}
