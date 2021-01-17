@@ -2,10 +2,8 @@ package verboten
 
 import (
 	"../../string"
-
-	"strings"
 )
 
-func Run(parameters ...string) (String) {
+func Run(parameters ...idiom_string.Type) idiom_string.Type {
 	return idiom_string.Nothing()
 }
