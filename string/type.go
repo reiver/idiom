@@ -27,6 +27,11 @@ func Error(err string) Type {
 	}
 }
 
+func Errorf(format string, a ...interface{}) Type {
+	msg := fmt.Sprintf(format, a...)
+	return Error(msg)
+}
+
 func Something(value string) Type {
 	return Type{
 		state:  stateSomething,
