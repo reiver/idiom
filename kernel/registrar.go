@@ -1,4 +1,4 @@
-package idioms
+package idiom_kernel
 
 type Registrar interface {
 	Fetch(string) (Handler, error)

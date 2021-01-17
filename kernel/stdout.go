@@ -1,4 +1,4 @@
-package idioms
+package idiom_kernel
 
 import (
 	"os"
