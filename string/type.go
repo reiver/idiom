@@ -59,6 +59,14 @@ func (receiver Type) GoString() string {
 	}
 }
 
+func (receiver Type) Err() error {
+	if ! receiver.IsError()  {
+		return nil
+	}
+
+	return errors.New(receiver.value)
+}
+
 func (receiver Type) Return() (string, error) {
 	switch {
 	case receiver.IsNothing():
@@ -71,5 +79,3 @@ func (receiver Type) Return() (string, error) {
 		return "", errInternalError
 	}
 }
-
-
