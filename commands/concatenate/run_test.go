@@ -169,9 +169,15 @@ func TestRun(t *testing.T) {
 	for testNumber, test := range tests {
 
 		actual := Run(test.Values...)
-		_, err := actual.Unwrap()
-		if nil != err {
-			t.Errorf("For test #%d, did not expect an error, but actually got one: (%T) %s", testNumber, err, err)
+
+		if actual.IsNothing() {
+			t.Errorf("For test #%d, did not expect the actual value to be nothing.", testNumber)
+			t.Logf("ACTUAL: %#v", actual)
+			continue
+		}
+		if actual.IsError() {
+			t.Errorf("For test #%d, did not expect the actual value to be an error.", testNumber)
+			t.Logf("ACTUAL: %#v", actual)
 			continue
 		}
 

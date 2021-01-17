@@ -11,17 +11,18 @@ func Run(parameters ...idiom_string.Type) idiom_string.Type {
 	var builder strings.Builder
 
 	for _, s := range parameters {
-		if idiom_string.Nothing() == s {
+		switch {
+		case s.IsNothing():
 			continue
-		}
-
-		str, err := s.Unwrap()
-		if nil != err {
+		case s.IsError():
 			//@TODO: should we return all the errors?
 			return s
+		case s.IsSomething():
+			value, _ := s.Return()
+			builder.WriteString(value)
+		default:
+			return idiom_string.Error("internal error")
 		}
-
-		builder.WriteString(str)
 	}
 
 	return idiom_string.Something(builder.String())
