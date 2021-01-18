@@ -5,12 +5,9 @@ import (
 	"./kernel"
 	"./string"
 
-	"bytes"
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
-	"unicode/utf8"
 )
 
 func main() {
@@ -48,68 +45,43 @@ func main() {
 
 	// The for-loop here reads in a single line of code, and then tries to interpret it.
 	{
-		scanner := bufio.NewScanner(file)
-		scanner.Split(func(data []byte, atEOF bool) (advance int, token []byte, err error){
-
-			if atEOF && len(data) == 0 {
-				return 0, nil, nil
-			}
-			if atEOF {
-				return len(data), data, nil
-			}
-
-			if i := bytes.IndexAny(data, "|\u000A\u000B\u000C\u000D\u0085\u2028\u2029"); i >= 0 {
-				r, size := utf8.DecodeRune(data[i:])
-				switch r {
-				case '|':
-					return i, data[0:i], nil
-				default:
-					return i + size, data[0:i], nil
-				}
-			}
-
-			return
-		})
+		scanner := bufio.NewReader(file)
 
 
 		var lineNumber int64 = 0
 		var result idiom_string.Type
-		for scanner.Scan() {
+		for {
 			lineNumber++
 
-			line := scanner.Text()
-			line = strings.Trim(line, " \t")
-
-			// Skip over any "empty" lines.
-			if "" == strings.Trim(line, " \t") {
-				continue
-			}
-
-			tokens := strings.Split(line, " ") //@TODO: This needs to be replaced.
+			tokens := readline(scanner)
 			if 0 >= len(tokens) {
+		/////////////// CONTINUE
 				continue
 			}
 
-			command    := tokens[0]
+			token0 := tokens[0]
+			if idiom_string.Error("end of file") == token0 {
+				os.Exit(0)
+			}
+
+			var command string
+			{
+				var err error
+				command, err = token0.Return()
+				if nil != err {
+panic(err)
+					
+				}
+			}
+
 			parameters := tokens[1:]
 
-			var p []idiom_string.Type = make([]idiom_string.Type, len(parameters))
-			for i:=0; i<len(p); i++ {
-				p[i] = idiom_string.Something(parameters[i])
-			}
-
-			result = idiom_kernel.Run(command, p...)
+			result = idiom_kernel.Run(command, parameters...)
 			if result.IsError() {
-				fmt.Fprintln(os.Stderr, "\n"+"\x1b[30;41m"+"ERROR"+"\x1b[0m"+" on line", lineNumber, ":", result.Err())
-				fmt.Fprintf(os.Stderr, "\t%q\n", scanner.Text())
+				fmt.Fprintln(os.Stderr, "\n"+"\x1b[30;41m"+"ERROR"+"\x1b[0m"+" on line", lineNumber, "for command", command, ":", result.Err())
 				os.Exit(1)
 				return
 			}
-		}
-		if err := scanner.Err(); nil != err {
-			fmt.Fprintf(os.Stderr, "ERROR: problem scanning %q: %s\n", filename, err)
-			os.Exit(1)
-			return
 		}
 	}
 }
