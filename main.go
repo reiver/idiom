@@ -76,7 +76,7 @@ panic(err)
 
 			parameters := tokens[1:]
 
-			result = idiom_kernel.Run(command, parameters...)
+			result = idiom_kernel.Stem.Run(command, parameters...)
 			if result.IsError() {
 				fmt.Fprintln(os.Stderr, "\n"+"\x1b[30;41m"+"ERROR"+"\x1b[0m"+" on line", lineNumber, "for command", command, ":", result.Err())
 				os.Exit(1)

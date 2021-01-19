@@ -9,7 +9,7 @@ import (
 )
 
 func Run(parameters ...idiom_string.Type) idiom_string.Type {
-	return run(idiom_kernel.Stdout, parameters...)
+	return run(idiom_kernel.Stem.Stdout(), parameters...)
 }
 
 func run(stdout io.Writer, parameters ...idiom_string.Type) idiom_string.Type {

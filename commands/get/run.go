@@ -20,5 +20,5 @@ func Run(parameters ...idiom_string.Type) idiom_string.Type {
 	}
 	name, _ := wrappedName.Return()
 
-	return idiom_kernel.Variables.Get(name)
+	return idiom_kernel.Stem.Variables().Get(name)
 }
