@@ -8,4 +8,5 @@ import (
 	_ "./publish"
 	_ "./put"
 	_ "./set"
+	_ "./something"
 )
