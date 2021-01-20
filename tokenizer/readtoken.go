@@ -1,7 +1,7 @@
-package main
+package idiom_tokenizer
 
 import (
-	"./string"
+	"../token"
 
 	"errors"
 	"io"
@@ -9,49 +9,13 @@ import (
 	"unicode"
 )
 
-var (
-	eof idiom_string.Type = idiom_string.Error("end of file")
-	eol idiom_string.Type = idiom_string.Error("end of line")
-)
-
-func readline(scanner io.RuneScanner) []idiom_string.Type {
+func readtoken(scanner io.RuneScanner) (idiom_token.Type, error) {
 	if nil == scanner {
-		panic("idiom: internal error: nil scanner in readline()")
-	}
-
-	var tokens []idiom_string.Type
-
-	Loop:
-	for {
-		token := readtoken(scanner)
-		switch token {
-		case eof:
-			if 0 >= len(tokens) {
-				return []idiom_string.Type{eof}
-			}
-	/////////////// BREAK
-			break Loop
-		case eol:
-			if 0 >= len(tokens) {
-				return []idiom_string.Type(nil)
-			}
-	/////////////// BREAK
-			break Loop
-		default:
-			tokens = append(tokens, token)
-		}
-	}
-
-	return tokens
-}
-
-func readtoken(scanner io.RuneScanner) idiom_string.Type {
-	if nil == scanner {
-		panic("idiom: internal error: nil scanner in readtoken()")
+		return idiom_token.Undefined(), errNilRuneScanner
 	}
 
 	if err := discardWhitespace(scanner); nil != err {
-		return idiom_string.Error(err.Error())
+		return idiom_token.Undefined(), err
 	}
 
 	var buffer strings.Builder
@@ -61,13 +25,13 @@ func readtoken(scanner io.RuneScanner) idiom_string.Type {
 		r, _, err := scanner.ReadRune()
 		if io.EOF == err {
 			if 0 == buffer.Len() {
-				return eof
+				return idiom_token.EOF(), nil
 			}
 	/////////////// BREAK
 			break Loop
 		}
 		if nil != err {
-			return idiom_string.Error(err.Error())
+			return idiom_token.Undefined(), err
 		}
 		switch r {
 		case
@@ -101,7 +65,7 @@ func readtoken(scanner io.RuneScanner) idiom_string.Type {
 			'\u2028', // line separator
 			'\u2029': // paragraph separator
 			if 0 == buffer.Len() {
-				return eol
+				return idiom_token.EOL(), nil
 			}
 			scanner.UnreadRune()
 	/////////////// BREAK
@@ -111,7 +75,7 @@ func readtoken(scanner io.RuneScanner) idiom_string.Type {
 		buffer.WriteRune(r)
 	}
 
-	return idiom_string.Something(buffer.String())
+	return idiom_token.String(buffer.String()), nil
 }
 
 
