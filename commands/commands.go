@@ -4,6 +4,7 @@ import (
 	_ "./concatenate"
 	_ "./error"
 	_ "./get"
+	_ "./LF"
 	_ "./line"
 	_ "./nothing"
 	_ "./pipe"
