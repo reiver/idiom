@@ -1,6 +1,7 @@
 package verboten
 
 import (
+	_ "./💭"
 	_ "./concatenate"
 	_ "./error"
 	_ "./get"
