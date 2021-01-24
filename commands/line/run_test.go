@@ -164,6 +164,30 @@ func TestRun(t *testing.T) {
 			},
 			Expected: idiom_string.Something("d A t E"),
 		},
+
+
+
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("A line on its own\n"),
+				idiom_string.Something("ONE"),
+				idiom_string.Something("TWO THREE"),
+				idiom_string.Something("FOUR FIVE"),
+			},
+			Expected: idiom_string.Something("A line on its own\nONE TWO THREE FOUR FIVE"),
+		},
+
+
+
+		{
+			Values: []idiom_string.Type{
+				idiom_string.Something("APPLE BANANA  CHERRY   DATE    GRAPE"),
+				idiom_string.Something("ONE    TWO   THREE  FOUR FIVE\n"),
+				idiom_string.Something("hello world!\u2028"),
+				idiom_string.Something("2nd verse same as the first"),
+			},
+			Expected: idiom_string.Something("APPLE BANANA  CHERRY   DATE    GRAPE ONE    TWO   THREE  FOUR FIVE\nhello world!\u20282nd verse same as the first"),
+		},
 	}
 
 	for testNumber, test := range tests {
